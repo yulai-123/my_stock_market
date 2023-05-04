@@ -1,0 +1,10 @@
+mySQL:
+  username: root
+  password: abcd1234
+  host: stock_market_data
+  port: 3306
+  database: stock_market
+
+tuShare:
+  host: http://api.tushare.pro
+  token: 5a3405f31180af11e4eee9e08d26d83effbe9628a98c20a41e76e43a

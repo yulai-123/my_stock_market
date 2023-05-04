@@ -9,7 +9,13 @@ import (
 )
 
 type Conf struct {
-	MySQL MySQLConf
+	MySQL   *MySQLConf   `yaml:"mySQL"`
+	TuShare *TuShareConf `yaml:"tuShare"`
+}
+
+type TuShareConf struct {
+	Host  string `yaml:"host"`
+	Token string `yaml:"token"`
 }
 
 type MySQLConf struct {
@@ -39,5 +45,19 @@ func MustInitConf(ctx context.Context) error {
 			return
 		}
 	})
-	return outErr
+
+	if outErr != nil {
+		return outErr
+	}
+
+	logrus.Info("[MustInitConf] init conf success")
+	return nil
+}
+
+func GetMySQLConf(ctx context.Context) *MySQLConf {
+	return myConf.MySQL
+}
+
+func GetTuShareConf(ctx context.Context) *TuShareConf {
+	return myConf.TuShare
 }
