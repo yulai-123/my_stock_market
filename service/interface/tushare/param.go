@@ -78,3 +78,30 @@ type DailyBasicParam struct {
 type DailyBasicResult struct {
 	DailyBasicList []*do.DailyBasic
 }
+
+type CashflowParam struct {
+	TSCode string
+	Period string
+}
+
+type CashflowResult struct {
+	CashflowList []*do.Cashflow
+}
+
+type BalanceSheetParam struct {
+	TSCode string
+	Period string
+}
+
+type BalanceSheetResult struct {
+	BalanceSheetList []*do.BalanceSheet
+}
+
+type IncomeParam struct {
+	TSCode string
+	Period string
+}
+
+type IncomeResult struct {
+	IncomeList []*do.Income
+}

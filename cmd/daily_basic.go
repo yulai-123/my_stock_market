@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// SaveAllDailyBasic 保存所有工作日&所有股票的基本指标
 func (s *Stock) SaveAllDailyBasic(ctx context.Context) error {
 	// 上海证劵交易所正式营业时间1990.12.19
 	tradeCalResult, err := s.TuShare.TradeCal(ctx, tushare.TradeCalParam{

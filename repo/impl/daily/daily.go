@@ -24,7 +24,17 @@ func (i *Impl) BatchGetStockDaily(ctx context.Context, param daily.BatchGetStock
 
 	for _, tsCode := range param.TSCode {
 		stockDailyList := make([]*po.StockDaily, 0)
-		err := i.provider.WithContext(ctx).Where("ts_code = ?", tsCode).Find(&stockDailyList).Error
+
+		db := i.provider.WithContext(ctx).Where("ts_code = ?", tsCode)
+
+		if len(param.StartTime) > 0 {
+			db = db.Where("trade_date >= ?", param.StartTime)
+		}
+		if len(param.EndTime) > 0 {
+			db = db.Where("trade_date <= ?", param.EndTime)
+		}
+
+		err := db.Find(&stockDailyList).Error
 		if err != nil {
 			logrus.Errorf("[BatchGetStockDaily] find data error: %v", err)
 			return nil, err

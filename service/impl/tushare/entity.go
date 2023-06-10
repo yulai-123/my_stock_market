@@ -9,4 +9,8 @@ var (
 	StockMonthlyAPI APIName = "monthly"
 	TradeCalAPI     APIName = "trade_cal"
 	DailyBasicAPI   APIName = "daily_basic"
+
+	CashflowAPI     APIName = "cashflow"
+	BalanceSheetAPI APIName = "balancesheet"
+	IncomeAPI       APIName = "income"
 )

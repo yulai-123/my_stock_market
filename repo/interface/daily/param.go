@@ -7,7 +7,9 @@ type BatchSaveStockDailyParam struct {
 }
 
 type BatchGetStockDailyParam struct {
-	TSCode []string
+	TSCode    []string
+	StartTime string
+	EndTime   string
 }
 
 type BatchGetStockDailyResult struct {

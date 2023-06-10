@@ -7,12 +7,17 @@ import (
 	"my_stock_market/config"
 	"my_stock_market/infra"
 	"os"
+	"time"
 )
 
 func main() {
 	ctx := context.Background()
 
-	logFile, err := os.OpenFile("./log.txt", os.O_WRONLY|os.O_CREATE, 0755)
+	var err error
+
+	currentTime := time.Now().Format("2006-01-02-15:04:05")
+
+	logFile, err := os.OpenFile("logs/"+currentTime+".txt", os.O_WRONLY|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +35,7 @@ func main() {
 
 	s := cmd.NewStock(ctx)
 
-	err = s.CheckAlgorithm1(ctx)
+	err = s.MakeFinancialStatements(ctx)
 	if err != nil {
 		panic(err)
 	}

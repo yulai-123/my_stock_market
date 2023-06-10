@@ -111,7 +111,7 @@ func getResponseData(ctx context.Context, response *http.Response) (map[string]i
 func Post(ctx context.Context, apiName string, params map[string]interface{}, fieldList []string) (map[string]interface{}, error) {
 	var response *http.Response
 	var err error
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 60; i++ {
 		request, err := getRequest(ctx, apiName, params, fieldList)
 		if err != nil {
 			return nil, err
@@ -119,20 +119,18 @@ func Post(ctx context.Context, apiName string, params map[string]interface{}, fi
 		response, err = client.Do(request)
 		if err != nil {
 			logrus.Errorf("[Post] client post error: %v, try: %v", err, i)
-			time.Sleep(10 * time.Second)
+			time.Sleep(3 * time.Second)
+			continue
 		}
-		if err == nil {
-			break
+
+		data, err := getResponseData(ctx, response)
+		if err != nil {
+			time.Sleep(3 * time.Second)
+			continue
 		}
-	}
-	if err != nil {
-		return nil, err
+
+		return data, nil
 	}
 
-	data, err := getResponseData(ctx, response)
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return nil, err
 }

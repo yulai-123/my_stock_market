@@ -5,9 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"my_stock_market/config"
 	"my_stock_market/infra"
-	"my_stock_market/repo/impl/daily"
 	"os"
-	"testing"
 )
 
 func initContainer(ctx context.Context) {
@@ -26,13 +24,4 @@ func initContainer(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func TestAny(t *testing.T) {
-	ctx := context.Background()
-
-	initContainer(ctx)
-
-	dailyDAL := daily.NewStockDailyDAL(ctx)
-
 }
