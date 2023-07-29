@@ -105,3 +105,44 @@ type IncomeParam struct {
 type IncomeResult struct {
 	IncomeList []*do.Income
 }
+
+type IndexParam struct {
+	TSCode string
+}
+
+type IndexResult struct {
+	IndexList []*do.Index
+}
+
+type IndexDailyParam struct {
+	TSCode    string
+	TradeDate string
+	StartDate string
+	EndDate   string
+}
+
+type IndexDailyResult struct {
+	IndexDailyList []*do.IndexDaily
+}
+
+type FundBasicParam struct {
+	Market string
+	Status string
+	Limit  int64
+	Offset int64
+}
+
+type FundBasicResult struct {
+	FundBasicList []*do.FundBasic
+}
+
+type FundDailyParam struct {
+	TSCode    string
+	TradeDate string
+	StartDate string
+	EndDate   string
+}
+
+type FundDailyResult struct {
+	FundDailyList []*do.FundDaily
+}

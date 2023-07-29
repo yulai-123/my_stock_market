@@ -1,4 +1,4 @@
-package cmd
+package tushare
 
 import (
 	"context"
@@ -51,7 +51,7 @@ func (s *Stock) MakeFinancialStatements(ctx context.Context) error {
 	}
 	logrus.Infof("[MakeFinancialStatements] 获取了%v个公司的财务数据", len(fullFinancialData))
 	// 过滤出值得观察的企业
-	goodEnterpriseData, err := s.filterGoodEnterpriseData(ctx, fullFinancialData)
+	goodEnterpriseData, err := s.filterGoodEnterpriseData(ctx, fullFinancialData, 0)
 	if err != nil {
 		return err
 	}
@@ -63,6 +63,45 @@ func (s *Stock) MakeFinancialStatements(ctx context.Context) error {
 		return err
 	}
 	logrus.Infof("[MakeFinancialStatements] 保存为excel成功")
+
+	return nil
+}
+
+// CheckFinancialData
+
+func (s *Stock) CheckFinancialData(ctx context.Context) error {
+
+	// 获取所有股票的财务数据
+	fullFinancialData, err := s.getFullFinancialData(ctx, []string{})
+	if err != nil {
+		return err
+	}
+	logrus.Infof("[CheckFinancialData] 获取了%v个公司的财务数据", len(fullFinancialData))
+
+	enterpriseCount := make(map[string]int)
+	for endDate := int64(2022); endDate >= 2017; endDate-- {
+		dataMap, err := s.filterGoodEnterpriseData(ctx, fullFinancialData, endDate)
+		if err != nil {
+			return err
+		}
+		for tsCode := range dataMap {
+			enterpriseCount[tsCode]++
+		}
+	}
+
+	logrus.Infof("打印结果----------------")
+	for tsCode, count := range enterpriseCount {
+		logrus.Infof("tsCode: %v, count: %v", tsCode, count)
+	}
+
+	logrus.Infof("打印分布---------------")
+	distributionMap := make(map[int]int)
+	for _, count := range enterpriseCount {
+		distributionMap[count]++
+	}
+	for count, num := range distributionMap {
+		logrus.Infof("count: %v, num: %v", count, num)
+	}
 
 	return nil
 }
@@ -281,10 +320,26 @@ func (s *Stock) getFullFinancialData(ctx context.Context, tsCodeList []string) (
 // 1. 上市时间达到3年，财报长度达到三年
 // 2. 如果上市时间超过5年，最近5年ROE都要在15%以上
 // 3. 如果上市时间不超过5年，则最近每年ROE都要在15%以上
-func (s *Stock) filterGoodEnterpriseData(ctx context.Context, enterpriseDataMap map[string][]*EnterpriseGrowthData) (map[string][]*EnterpriseGrowthData, error) {
+func (s *Stock) filterGoodEnterpriseData(ctx context.Context, enterpriseDataMap map[string][]*EnterpriseGrowthData, endYear int64) (map[string][]*EnterpriseGrowthData, error) {
+	if endYear <= 0 {
+		endYear = 2099
+	}
+
 	result := make(map[string][]*EnterpriseGrowthData)
 
 	for _, eList := range enterpriseDataMap {
+		endIndex := -1
+		for i := len(eList) - 1; i >= 0; i-- {
+			if eList[i].Year <= endYear {
+				endIndex = i
+				break
+			}
+		}
+		if endIndex == -1 {
+			continue
+		}
+		eList = eList[:endIndex+1]
+
 		if len(eList) < 3 {
 			continue
 		}

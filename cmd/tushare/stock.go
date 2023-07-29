@@ -1,4 +1,4 @@
-package cmd
+package tushare
 
 import (
 	"context"
@@ -6,7 +6,11 @@ import (
 	cashflow2 "my_stock_market/repo/impl/cashflow"
 	daily2 "my_stock_market/repo/impl/daily"
 	daily_basic2 "my_stock_market/repo/impl/daily_basic"
+	"my_stock_market/repo/impl/fund_basic"
+	fund_daily2 "my_stock_market/repo/impl/fund_daily"
 	income2 "my_stock_market/repo/impl/income"
+	index2 "my_stock_market/repo/impl/index"
+	daily3 "my_stock_market/repo/impl/index_daily"
 	monthly2 "my_stock_market/repo/impl/monthly"
 	stock2 "my_stock_market/repo/impl/stock"
 	weekly2 "my_stock_market/repo/impl/weekly"
@@ -14,7 +18,11 @@ import (
 	"my_stock_market/repo/interface/cashflow"
 	"my_stock_market/repo/interface/daily"
 	"my_stock_market/repo/interface/daily_basic"
+	fund "my_stock_market/repo/interface/fund_basic"
+	"my_stock_market/repo/interface/fund_daily"
 	"my_stock_market/repo/interface/income"
+	"my_stock_market/repo/interface/index"
+	"my_stock_market/repo/interface/index_daily"
 	"my_stock_market/repo/interface/monthly"
 	"my_stock_market/repo/interface/stock"
 	"my_stock_market/repo/interface/weekly"
@@ -32,6 +40,10 @@ type Stock struct {
 	IncomeDAL       income.Income
 	CashflowDAL     cashflow.Cashflow
 	BalanceSheetDAL balance_sheet.BalanceSheet
+	IndexDAL        index.DAL
+	IndexDailyDAL   index_daily.DAL
+	FundBasicDAL    fund.DAL
+	FundDailyDAL    fund_daily.DAL
 }
 
 func NewStock(ctx context.Context) *Stock {
@@ -45,5 +57,9 @@ func NewStock(ctx context.Context) *Stock {
 		IncomeDAL:       income2.NewIncomeDAL(ctx),
 		CashflowDAL:     cashflow2.NewCashflowDAL(ctx),
 		BalanceSheetDAL: banlance_sheet.NewBalanceSheetDAL(ctx),
+		IndexDAL:        index2.NewIndexDAL(ctx),
+		IndexDailyDAL:   daily3.NewIndexDailyDAL(ctx),
+		FundBasicDAL:    fund_basic.NewFundBasicDAL(ctx),
+		FundDailyDAL:    fund_daily2.NewFundDailyDAL(ctx),
 	}
 }

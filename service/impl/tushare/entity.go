@@ -13,4 +13,10 @@ var (
 	CashflowAPI     APIName = "cashflow"
 	BalanceSheetAPI APIName = "balancesheet"
 	IncomeAPI       APIName = "income"
+
+	IndexAPI      APIName = "index_basic"
+	IndexDailyAPI APIName = "index_daily"
+
+	FundBasicAPI APIName = "fund_basic"
+	FundDailyAPI APIName = "fund_daily"
 )

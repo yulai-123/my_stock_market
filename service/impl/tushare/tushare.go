@@ -441,3 +441,130 @@ func (i Impl) DailyBasic(ctx context.Context, param tushare.DailyBasicParam) (*t
 
 	return &tushare.DailyBasicResult{DailyBasicList: dailyBasicList}, nil
 }
+
+func (i Impl) Index(ctx context.Context, param tushare.IndexParam) (*tushare.IndexResult, error) {
+	params := map[string]interface{}{}
+
+	if len(param.TSCode) > 0 {
+		params["ts_code"] = param.TSCode
+	}
+
+	fieldList := []string{"ts_code", "name",
+		"fullname", "market", "list_date",
+		"publisher", "index_type", "category", "base_date",
+		"base_point", "weight_rule", "desc", "exp_date"}
+	data, err := Post(ctx, IndexAPI, params, fieldList)
+	if err != nil {
+		return nil, err
+	}
+
+	fields, ok := data["fields"].([]interface{})
+	if !ok {
+		err := fmt.Errorf("force conversion fields failed")
+		logrus.Errorf("[Index] force conversion fields failed")
+		return nil, err
+	}
+	items, ok := data["items"].([]interface{})
+	if !ok {
+		err := fmt.Errorf("force conversion items failed")
+		logrus.Errorf("[Index] force conversion items failed")
+		return nil, err
+	}
+
+	indexList := make([]*do.Index, 0)
+	for _, itemTemp := range items {
+		item := itemTemp.([]interface{})
+		index := &do.Index{}
+		if len(fields) != len(item) {
+			err := fmt.Errorf("item.len is not equal fields.len")
+			logrus.Errorf("[Index] item.len is not equal fields.len")
+			return nil, err
+		}
+		temp := make(map[string]interface{})
+		for i, value := range item {
+			if value == nil {
+				continue
+			}
+			temp[fields[i].(string)] = value
+		}
+		tempJson, err := json.Marshal(temp)
+		if err != nil {
+			logrus.Errorf("[Index] marshal temp error: %v", err)
+			return nil, err
+		}
+		err = json.Unmarshal(tempJson, index)
+		if err != nil {
+			logrus.Errorf("[Index] unmarshal tempJson error: %v", err)
+			return nil, err
+		}
+		indexList = append(indexList, index)
+	}
+
+	return &tushare.IndexResult{IndexList: indexList}, nil
+}
+
+func (i Impl) IndexDaily(ctx context.Context, param tushare.IndexDailyParam) (*tushare.IndexDailyResult, error) {
+	params := map[string]interface{}{}
+
+	params["ts_code"] = param.TSCode
+
+	if len(param.TradeDate) > 0 {
+		params["trade_date"] = param.TradeDate
+	}
+	if len(param.StartDate) > 0 {
+		params["start_date"] = param.StartDate
+	}
+	if len(param.EndDate) > 0 {
+		params["end_date"] = param.EndDate
+	}
+	fieldList := []string{"ts_code", "trade_date", "open", "high",
+		"low", "close", "pre_close", "change", "pct_chg",
+		"vol", "amount"}
+	data, err := Post(ctx, IndexDailyAPI, params, fieldList)
+	if err != nil {
+		return nil, err
+	}
+	fields, ok := data["fields"].([]interface{})
+	if !ok {
+		err := fmt.Errorf("force conversion fields failed")
+		logrus.Errorf("[IndexDaily] force conversion fields failed")
+		return nil, err
+	}
+	items, ok := data["items"].([]interface{})
+	if !ok {
+		err := fmt.Errorf("force conversion items failed")
+		logrus.Errorf("[IndexDaily] force conversion items failed")
+		return nil, err
+	}
+
+	indexDailyList := make([]*do.IndexDaily, 0)
+	for _, itemTemp := range items {
+		item := itemTemp.([]interface{})
+		indexDaily := &do.IndexDaily{}
+		if len(fields) != len(item) {
+			err := fmt.Errorf("item.len is not equal fields.len")
+			logrus.Errorf("[IndexDaily] item.len is not equal fields.len")
+			return nil, err
+		}
+		temp := make(map[string]interface{})
+		for i, value := range item {
+			if value == nil {
+				continue
+			}
+			temp[fields[i].(string)] = value
+		}
+		tempJson, err := json.Marshal(temp)
+		if err != nil {
+			logrus.Errorf("[IndexDaily] marshal temp error: %v", err)
+			return nil, err
+		}
+		err = json.Unmarshal(tempJson, indexDaily)
+		if err != nil {
+			logrus.Errorf("[IndexDaily] unmarshal tempJson error: %v", err)
+			return nil, err
+		}
+		indexDailyList = append(indexDailyList, indexDaily)
+	}
+
+	return &tushare.IndexDailyResult{IndexDailyList: indexDailyList}, nil
+}

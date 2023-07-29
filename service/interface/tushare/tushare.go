@@ -12,4 +12,8 @@ type TuShare interface {
 	Cashflow(ctx context.Context, param CashflowParam) (*CashflowResult, error)
 	BalanceSheet(ctx context.Context, param BalanceSheetParam) (*BalanceSheetResult, error)
 	Income(ctx context.Context, param IncomeParam) (*IncomeResult, error)
+	Index(ctx context.Context, param IndexParam) (*IndexResult, error)
+	IndexDaily(ctx context.Context, param IndexDailyParam) (*IndexDailyResult, error)
+	FundBasic(ctx context.Context, param FundBasicParam) (*FundBasicResult, error)
+	FundDaily(ctx context.Context, param FundDailyParam) (*FundDailyResult, error)
 }
