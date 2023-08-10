@@ -38,7 +38,7 @@ func main() {
 	//s := tushare.NewStock(ctx)
 	t := fund.NewFund(ctx)
 
-	err = t.Algorithm1(ctx)
+	err = t.Check(ctx)
 	if err != nil {
 		panic(err)
 	}
