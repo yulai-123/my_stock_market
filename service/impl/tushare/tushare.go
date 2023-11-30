@@ -16,6 +16,63 @@ func NewTuShare(ctx context.Context) tushare.TuShare {
 	return Impl{}
 }
 
+func (i Impl) FundAdj(ctx context.Context, param tushare.FundAdjParam) (*tushare.FundAdjResult, error) {
+	params := map[string]interface{}{}
+	params["ts_code"] = param.TSCode
+	params["end_date"] = param.EndDate
+	params["start_date"] = param.StartDate
+
+	fieldList := []string{"ts_code", "trade_date", "adj_factor"}
+	data, err := Post(ctx, FundAdjAPI, params, fieldList)
+	if err != nil {
+		return nil, err
+	}
+
+	fields, ok := data["fields"].([]interface{})
+	if !ok {
+		err := fmt.Errorf("force conversion fields failed")
+		logrus.Errorf("[StockBasic] force conversion fields failed")
+		return nil, err
+	}
+	items, ok := data["items"].([]interface{})
+	if !ok {
+		err := fmt.Errorf("force conversion items failed")
+		logrus.Errorf("[FundAdj] force conversion items failed")
+		return nil, err
+	}
+
+	fundAdjList := make([]*tushare.FundAdj, 0)
+	for _, itemTemp := range items {
+		item := itemTemp.([]interface{})
+		fundAdj := &tushare.FundAdj{}
+		if len(fields) != len(item) {
+			err := fmt.Errorf("item.len is not equal fields.len")
+			logrus.Errorf("[StockBasic] item.len is not equal fields.len")
+			return nil, err
+		}
+		temp := make(map[string]interface{})
+		for i, value := range item {
+			if value == nil {
+				continue
+			}
+			temp[fields[i].(string)] = value
+		}
+		tempJson, err := json.Marshal(temp)
+		if err != nil {
+			logrus.Errorf("[StockBasic] marshal temp error: %v", err)
+			return nil, err
+		}
+		err = json.Unmarshal(tempJson, fundAdj)
+		if err != nil {
+			logrus.Errorf("[StockBasic] unmarshal tempJson error: %v", err)
+			return nil, err
+		}
+		fundAdjList = append(fundAdjList, fundAdj)
+	}
+
+	return &tushare.FundAdjResult{FundAdjList: fundAdjList}, nil
+}
+
 func (i Impl) TradeCal(ctx context.Context, param tushare.TradeCalParam) (*tushare.TradeCalResult, error) {
 	params := map[string]interface{}{}
 	if len(param.Exchange) > 0 {

@@ -16,4 +16,5 @@ type TuShare interface {
 	IndexDaily(ctx context.Context, param IndexDailyParam) (*IndexDailyResult, error)
 	FundBasic(ctx context.Context, param FundBasicParam) (*FundBasicResult, error)
 	FundDaily(ctx context.Context, param FundDailyParam) (*FundDailyResult, error)
+	FundAdj(ctx context.Context, param FundAdjParam) (*FundAdjResult, error)
 }

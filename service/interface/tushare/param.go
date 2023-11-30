@@ -146,3 +146,19 @@ type FundDailyParam struct {
 type FundDailyResult struct {
 	FundDailyList []*do.FundDaily
 }
+
+type FundAdjParam struct {
+	TSCode    string
+	StartDate string
+	EndDate   string
+}
+
+type FundAdj struct {
+	TSCode    string  `json:"ts_code"`
+	TradeDate string  `json:"trade_date"`
+	AdjFactor float64 `json:"adj_factor"`
+}
+
+type FundAdjResult struct {
+	FundAdjList []*FundAdj
+}

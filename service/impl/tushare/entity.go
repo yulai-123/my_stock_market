@@ -19,4 +19,5 @@ var (
 
 	FundBasicAPI APIName = "fund_basic"
 	FundDailyAPI APIName = "fund_daily"
+	FundAdjAPI   APIName = "fund_adj"
 )
