@@ -1,6 +1,7 @@
 .idea/
-./config/myconf.yml
+config/myconf.yml
 .gopkg/
 excel/*
 logs/*
 .DS_Store
+images/
