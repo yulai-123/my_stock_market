@@ -1,7 +1,8 @@
-package algorithm4
+package index
 
 import (
 	"context"
+	"github.com/sirupsen/logrus"
 	"my_stock_market/repo/impl/banlance_sheet"
 	cashflow2 "my_stock_market/repo/impl/cashflow"
 	daily2 "my_stock_market/repo/impl/daily"
@@ -30,7 +31,27 @@ import (
 	"my_stock_market/service/interface/tushare"
 )
 
-type Algorithm4 struct {
+// SaveAllIndex 保存全量指数列表，已经存在的会进行更新
+func (i2 *Index) SaveAllIndex(ctx context.Context) error {
+	indexBasicResult, err := i2.TuShare.Index(ctx, tushare.IndexParam{})
+	if err != nil {
+		return err
+	}
+
+	logrus.Infof("拉取股票列表成功，长度：%v", len(indexBasicResult.IndexList))
+
+	_, err = i2.IndexDAL.BatchSaveIndex(ctx, i2.BatchSaveIndexParam{
+		IndexList: indexBasicResult.IndexList,
+	})
+	if err != nil {
+		return err
+	}
+
+	logrus.Info("保存数据库成功")
+	return nil
+}
+
+type Index struct {
 	TuShare         tushare.TuShare
 	StockDAL        stock.DAL
 	StockDailyDAL   daily.DAL
@@ -46,8 +67,8 @@ type Algorithm4 struct {
 	FundDailyDAL    fund_daily.DAL
 }
 
-func NewAlgorithm4(ctx context.Context) *Algorithm4 {
-	return &Algorithm4{
+func NewIndex(ctx context.Context) *Index {
+	return &Index{
 		TuShare:         tushare2.NewTuShare(ctx),
 		StockDAL:        stock2.GetStockDAL(ctx),
 		StockDailyDAL:   daily2.NewStockDailyDAL(ctx),

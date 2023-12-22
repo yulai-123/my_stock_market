@@ -31,7 +31,6 @@ func (i Impl) BatchSaveCashflow(ctx context.Context, param cashflow.BatchSaveCas
 			po.UpdatedAt = updateAt
 			cashflowPOList = append(cashflowPOList, po)
 		}
-		logrus.Info(len(cashflowPOList))
 
 		fieldUpdateColumns := []string{"ann_date", "f_ann_date", "report_type",
 			"comp_type", "end_type", "updated_at", "n_cashflow_act"}

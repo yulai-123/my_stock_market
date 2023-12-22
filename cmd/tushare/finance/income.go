@@ -1,4 +1,4 @@
-package tushare
+package finance
 
 import (
 	"context"
@@ -9,8 +9,10 @@ import (
 )
 
 // SaveAllIncome 保存所有利润表
-func (s *Stock) SaveAllIncome(ctx context.Context) error {
-	stockBasicResult, err := s.TuShare.StockBasic(ctx, tushare.StockBasicParam{Limit: 100000})
+func (f *Finance) SaveAllIncome(ctx context.Context) error {
+	logrus.Infof("保存利润表")
+
+	stockBasicResult, err := f.TuShare.StockBasic(ctx, tushare.StockBasicParam{Limit: 100000})
 	if err != nil {
 		return err
 	}
@@ -22,14 +24,17 @@ func (s *Stock) SaveAllIncome(ctx context.Context) error {
 		tsCodeList = append(tsCodeList, stock.TSCode)
 	}
 
-	for _, tsCode := range tsCodeList {
-		result, err := s.TuShare.Income(ctx, tushare.IncomeParam{TSCode: tsCode})
+	for i, tsCode := range tsCodeList {
+		logrus.Infof("正在保存: %v, 进度: %v/%v", tsCode, i, len(tsCodeList))
+		result, err := f.TuShare.Income(ctx, tushare.IncomeParam{TSCode: tsCode})
 		if err != nil {
 			logrus.Errorf("拉取 %v 利润表失败：%v", tsCode, err)
 			return err
 		}
 
-		err = s.IncomeDAL.BatchSaveIncome(ctx, income.BatchSaveIncomeParam{IncomeList: result.IncomeList})
+		logrus.Infof("tsCode: %v, 长度: %v", tsCode, len(result.IncomeList))
+
+		err = f.IncomeDAL.BatchSaveIncome(ctx, income.BatchSaveIncomeParam{IncomeList: result.IncomeList})
 		if err != nil {
 			logrus.Errorf("保存 %v 利润表失败：%v", tsCode, err)
 			return err

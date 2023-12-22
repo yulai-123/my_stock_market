@@ -1,4 +1,4 @@
-package fund
+package stock
 
 import (
 	"context"
@@ -30,7 +30,7 @@ import (
 	"my_stock_market/service/interface/tushare"
 )
 
-type Fund struct {
+type Stock struct {
 	TuShare         tushare.TuShare
 	StockDAL        stock.DAL
 	StockDailyDAL   daily.DAL
@@ -46,8 +46,8 @@ type Fund struct {
 	FundDailyDAL    fund_daily.DAL
 }
 
-func NewFund(ctx context.Context) *Fund {
-	return &Fund{
+func NewStock(ctx context.Context) *Stock {
+	return &Stock{
 		TuShare:         tushare2.NewTuShare(ctx),
 		StockDAL:        stock2.GetStockDAL(ctx),
 		StockDailyDAL:   daily2.NewStockDailyDAL(ctx),

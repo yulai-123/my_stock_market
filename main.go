@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/sirupsen/logrus"
-	"my_stock_market/cmd/fund/algorithm3"
+	"my_stock_market/cmd/algorithm/finance"
 	"my_stock_market/config"
 	"my_stock_market/infra"
 	"os"
@@ -35,11 +35,11 @@ func main() {
 		panic(err)
 	}
 
-	//s := tushare.NewStock(ctx)
-	//t := fund.NewFund(ctx)
-	s := algorithm3.NewAlgorithm3(ctx)
+	f := finance.NewFinance(ctx)
+	err = f.MakeFinancialStatements(ctx)
 
-	err = s.Run(ctx)
+	//s := stock.NewStock(ctx)
+	//err = s.SaveAllDailyBasic(ctx)
 	if err != nil {
 		panic(err)
 	}

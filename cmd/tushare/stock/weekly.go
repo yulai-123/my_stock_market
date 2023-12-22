@@ -1,4 +1,4 @@
-package tushare
+package stock
 
 import (
 	"context"
@@ -10,10 +10,8 @@ import (
 	"time"
 )
 
-// SaveAllWeekly 保存所有工作日&所有股票的周线数据
-// 先获取所有股票ts_code
-// 然后根据ts_code拉取每一个公司的周线数据进行保存
-// 注意限频
+// SaveAllWeekly
+// 股市-周线
 func (s *Stock) SaveAllWeekly(ctx context.Context) error {
 	stockBasicResult, err := s.TuShare.StockBasic(ctx, tushare.StockBasicParam{Limit: 100000})
 	if err != nil {

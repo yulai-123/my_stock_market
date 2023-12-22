@@ -31,7 +31,6 @@ func (i Impl) BatchSaveBalanceSheet(ctx context.Context, param balance_sheet.Bat
 			po.UpdatedAt = updateAt
 			balanceSheetPOList = append(balanceSheetPOList, po)
 		}
-		logrus.Info(len(balanceSheetPOList))
 
 		fieldUpdateColumns := []string{"ann_date", "f_ann_date", "report_type", "comp_type",
 			"end_type", "updated_at", "total_assets", "total_liab"}

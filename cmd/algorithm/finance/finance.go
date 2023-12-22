@@ -1,4 +1,4 @@
-package algorithm2
+package finance
 
 import (
 	"context"
@@ -30,7 +30,7 @@ import (
 	"my_stock_market/service/interface/tushare"
 )
 
-type Algorithm2 struct {
+type Finance struct {
 	TuShare         tushare.TuShare
 	StockDAL        stock.DAL
 	StockDailyDAL   daily.DAL
@@ -46,8 +46,8 @@ type Algorithm2 struct {
 	FundDailyDAL    fund_daily.DAL
 }
 
-func NewAlgorithm2(ctx context.Context) *Algorithm2 {
-	return &Algorithm2{
+func NewFinance(ctx context.Context) *Finance {
+	return &Finance{
 		TuShare:         tushare2.NewTuShare(ctx),
 		StockDAL:        stock2.GetStockDAL(ctx),
 		StockDailyDAL:   daily2.NewStockDailyDAL(ctx),

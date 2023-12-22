@@ -31,7 +31,6 @@ func (i Impl) BatchSaveIncome(ctx context.Context, param income.BatchSaveIncomeP
 			po.UpdatedAt = updateAt
 			incomePOList = append(incomePOList, po)
 		}
-		logrus.Info(len(incomePOList))
 
 		fieldUpdateColumns := []string{"ann_date", "f_ann_date", "report_type",
 			"comp_type", "end_type", "updated_at", "revenue", "n_income_attr_p", "oper_cost"}

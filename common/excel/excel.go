@@ -32,7 +32,10 @@ func NewExcel(ctx context.Context, excelName string) (*Excel, error) {
 
 func (e *Excel) SetHeaderList(ctx context.Context, headerList []string) {
 	for index, value := range headerList {
-		cell := string('A'+index) + "1"
+		cell := string('A'+index%26) + "1"
+		if index >= 26 {
+			cell = "A" + cell
+		}
 		e.excelFile.SetCellValue("Sheet1", cell, value)
 	}
 }
@@ -40,7 +43,10 @@ func (e *Excel) SetHeaderList(ctx context.Context, headerList []string) {
 func (e *Excel) InsertData(ctx context.Context, dataList [][]interface{}) {
 	for r, data := range dataList {
 		for index, value := range data {
-			cell := string('A'+index) + strconv.Itoa(r+2)
+			cell := string('A'+index%26) + strconv.Itoa(r+2)
+			if index >= 26 {
+				cell = "A" + cell
+			}
 			e.excelFile.SetCellValue("Sheet1", cell, value)
 		}
 	}

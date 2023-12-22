@@ -1,4 +1,4 @@
-package tushare
+package stock
 
 import (
 	"context"
@@ -7,7 +7,8 @@ import (
 	"my_stock_market/service/interface/tushare"
 )
 
-// SaveStockList 保存全量股票列表，已经存在的会进行更新
+// SaveStockList
+// 股市-基本信息
 func (s *Stock) SaveStockList(ctx context.Context) error {
 	stockBasicResult, err := s.TuShare.StockBasic(ctx, tushare.StockBasicParam{Limit: 100000})
 	if err != nil {

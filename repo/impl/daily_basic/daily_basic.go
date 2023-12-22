@@ -57,7 +57,6 @@ func (i *Impl) BatchSaveDailyBasic(ctx context.Context, param daily_basic.BatchS
 			po.UpdatedAt = updatedAt
 			dailyBasicPOList = append(dailyBasicPOList, po)
 		}
-		logrus.Info(len(dailyBasicPOList))
 
 		fieldUpdateColumns := []string{"close", "turnover_rate", "turnover_rate_f", "volume_ratio",
 			"pe", "pe_ttm", "pb", "ps", "ps_ttm", "dv_ratio", "dv_ttm",

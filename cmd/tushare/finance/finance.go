@@ -1,4 +1,4 @@
-package tushare
+package finance
 
 import (
 	"context"
@@ -30,7 +30,27 @@ import (
 	"my_stock_market/service/interface/tushare"
 )
 
-type Stock struct {
+func (f *Finance) SaveAllData(ctx context.Context) error {
+	// 保存资产债务表
+	err := f.SaveAllBalanceSheet(ctx)
+	if err != nil {
+		return err
+	}
+	// 保存现金流量表
+	err = f.SaveAllCashflow(ctx)
+	if err != nil {
+		return err
+	}
+	// 保存利润表
+	err = f.SaveAllIncome(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type Finance struct {
 	TuShare         tushare.TuShare
 	StockDAL        stock.DAL
 	StockDailyDAL   daily.DAL
@@ -46,8 +66,8 @@ type Stock struct {
 	FundDailyDAL    fund_daily.DAL
 }
 
-func NewStock(ctx context.Context) *Stock {
-	return &Stock{
+func NewFinance(ctx context.Context) *Finance {
+	return &Finance{
 		TuShare:         tushare2.NewTuShare(ctx),
 		StockDAL:        stock2.GetStockDAL(ctx),
 		StockDailyDAL:   daily2.NewStockDailyDAL(ctx),

@@ -1,4 +1,4 @@
-package tushare
+package index
 
 import (
 	"context"
@@ -11,9 +11,10 @@ import (
 	"time"
 )
 
-func (s *Stock) SaveAllFundBasic(ctx context.Context) error {
+// SaveAllFundBasic 保存所有基金基本信息
+func (i2 *Index) SaveAllFundBasic(ctx context.Context) error {
 	// 场内，上市中，不然数据量太大
-	fundBasicResult, err := s.TuShare.FundBasic(ctx, tushare.FundBasicParam{
+	fundBasicResult, err := i2.TuShare.FundBasic(ctx, tushare.FundBasicParam{
 		Market: "E",
 		Status: "L",
 	})
@@ -23,7 +24,7 @@ func (s *Stock) SaveAllFundBasic(ctx context.Context) error {
 
 	logrus.Infof("拉取基金列表成功，长度：%v", len(fundBasicResult.FundBasicList))
 
-	_, err = s.FundBasicDAL.BatchSaveFundBasic(ctx, fund_basic.BatchSaveFundBasicParam{
+	_, err = i2.FundBasicDAL.BatchSaveFundBasic(ctx, fund_basic.BatchSaveFundBasicParam{
 		FundBasicList: fundBasicResult.FundBasicList,
 	})
 	if err != nil {
@@ -34,8 +35,9 @@ func (s *Stock) SaveAllFundBasic(ctx context.Context) error {
 	return nil
 }
 
-func (s *Stock) SaveAllFundDaily(ctx context.Context) error {
-	fundBasicResult, err := s.TuShare.FundBasic(ctx, tushare.FundBasicParam{
+// SaveAllFundDaily 保存所有基金日线
+func (i2 *Index) SaveAllFundDaily(ctx context.Context) error {
+	fundBasicResult, err := i2.TuShare.FundBasic(ctx, tushare.FundBasicParam{
 		Market: "E",
 		Status: "L",
 	})
@@ -46,7 +48,7 @@ func (s *Stock) SaveAllFundDaily(ctx context.Context) error {
 	logrus.Infof("拉取基金列表成功，长度：%v", len(fundBasicResult.FundBasicList))
 
 	for _, fundBasic := range fundBasicResult.FundBasicList {
-		err = s.saveFundDaily(ctx, fundBasic.TSCode)
+		err = i2.saveFundDaily(ctx, fundBasic.TSCode)
 		if err != nil {
 			return err
 		}
@@ -55,12 +57,12 @@ func (s *Stock) SaveAllFundDaily(ctx context.Context) error {
 	return nil
 }
 
-func (s *Stock) saveFundDaily(ctx context.Context, tsCode string) error {
+func (i2 *Index) saveFundDaily(ctx context.Context, tsCode string) error {
 	startDate := "20210101"
 	endDate := "20240101"
 
 	for i := 0; i < 7; i++ {
-		fundDailyResult, err := s.TuShare.FundDaily(ctx, tushare.FundDailyParam{
+		fundDailyResult, err := i2.TuShare.FundDaily(ctx, tushare.FundDailyParam{
 			TSCode:    tsCode,
 			StartDate: startDate,
 			EndDate:   endDate,
@@ -73,7 +75,7 @@ func (s *Stock) saveFundDaily(ctx context.Context, tsCode string) error {
 			return nil
 		}
 
-		fundAdjResult, err := s.TuShare.FundAdj(ctx, tushare.FundAdjParam{
+		fundAdjResult, err := i2.TuShare.FundAdj(ctx, tushare.FundAdjParam{
 			TSCode:    tsCode,
 			StartDate: startDate,
 			EndDate:   endDate,
@@ -117,7 +119,7 @@ func (s *Stock) saveFundDaily(ctx context.Context, tsCode string) error {
 			}
 		}
 
-		err = s.FundDailyDAL.BatchSaveFundDaily(ctx, fund_daily.BatchSaveFundDailyParam{FundDailyList: fundDailyResult.FundDailyList})
+		err = i2.FundDailyDAL.BatchSaveFundDaily(ctx, fund_daily.BatchSaveFundDailyParam{FundDailyList: fundDailyResult.FundDailyList})
 		if err != nil {
 			return err
 		}
